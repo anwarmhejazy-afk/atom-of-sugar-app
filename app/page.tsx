@@ -613,11 +613,11 @@ export default function HomePage() {
         }
 
         .hero-logo {
-          width: 140px;
-          height: 140px;
+          width: 320px;
+          height: 320px;
           object-fit: contain;
           display: block;
-          margin: 0 auto 28px;
+          margin: 0 auto 40px;
         }
 
         .brand-line {
@@ -1163,8 +1163,8 @@ export default function HomePage() {
 
         @media (max-width: 1024px) {
           .hero-logo {
-            width: 120px;
-            height: 120px;
+            width: 220px;
+            height: 220px;
           }
         }
 
@@ -1186,8 +1186,8 @@ export default function HomePage() {
           }
 
           .hero-logo {
-            width: 95px;
-            height: 95px;
+            width: 170px;
+            height: 170px;
             margin-bottom: 18px;
           }
 
