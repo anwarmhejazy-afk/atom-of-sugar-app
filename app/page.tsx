@@ -164,8 +164,8 @@ const products: Product[] = [
       ar: "مقروطة تمر فلسطينية تقليدية بطبقات غنية ونكهة أصيلة.",
     },
     note: {
-      en: "1 KG – 70 AED | 2 KG – 130 AED",
-  ar: "كيلو ٧٠ درهم | ٢ كيلو ١٣٠ درهم",
+      en: "Limited quantity - pre-order",
+      ar: "الكمية محدودة - الحجز مسبق",
     },
     options: [
   {
