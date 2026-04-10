@@ -492,61 +492,50 @@ export default function HomePage() {
   }
 
   function buildWhatsAppMessage() {
-    if (!selectedProduct || !selectedOption) {
-      return "";
-    }
-
-    if (selectedProduct.hasFlavorSelector && selectedFlavors.length === 0) {
-      alert(isArabic ? text.flavorRequired.ar : text.flavorRequired.en);
-      return "";
-    }
-
-    const lines: string[] = [];
-
-    lines.push("Hello,");
-    lines.push("");
-    lines.push("I would like to place an order.");
-    lines.push("");
-    lines.push("Product:");
-    lines.push(selectedProduct.title.en);
-    lines.push("");
-    lines.push("Option:");
-    lines.push(selectedOption.labelEn);
-    lines.push("");
-
-    if (selectedProduct.hasFlavorSelector) {
-      lines.push("Flavors:");
-      lines.push(
-        selectedFlavorObjects.length > 0
-          ? selectedFlavorObjects.map((flavor) => flavor.labelEn).join(", ")
-          : ""
-      );
-      lines.push("");
-    }
-
-    lines.push("Quantity:");
-    lines.push(String(quantity));
-    lines.push("");
-
-    lines.push("Gift Options:");
-    lines.push(
-      selectedGiftOptions.length > 0
-        ? selectedGiftOptions.map((gift) => gift.labelEn).join(", ")
-        : "None"
-    );
-    lines.push("");
-
-    lines.push("Special Notes:");
-    lines.push(specialNotes.trim() || "None");
-    lines.push("");
-
-    lines.push("Total Price:");
-    lines.push(totalPrice !== null ? formatAED(totalPrice) : "Price will be confirmed after order.");
-    lines.push("");
-    lines.push("Thank you.");
-
-    return lines.join("\n");
+  if (!selectedProduct || !selectedOption) {
+    return "";
   }
+
+  if (selectedProduct.hasFlavorSelector && selectedFlavors.length === 0) {
+    alert(isArabic ? text.flavorRequired.ar : text.flavorRequired.en);
+    return "";
+  }
+
+  const lines: string[] = [];
+
+  lines.push("Hello,");
+  lines.push("");
+  lines.push("I would like to order:");
+  lines.push("");
+  lines.push(`Product: ${selectedProduct.title.en}`);
+  lines.push(`Option: ${selectedOption.labelEn}`);
+  lines.push(`Quantity: ${quantity}`);
+
+  if (selectedProduct.hasFlavorSelector && selectedFlavorObjects.length > 0) {
+    lines.push(`Flavors: ${selectedFlavorObjects.map((flavor) => flavor.labelEn).join(", ")}`);
+  }
+
+  if (selectedGiftOptions.length > 0) {
+    lines.push(`Gift Options: ${selectedGiftOptions.map((gift) => gift.labelEn).join(", ")}`);
+  }
+
+  if (specialNotes.trim()) {
+    lines.push(`Notes: ${specialNotes.trim()}`);
+  }
+
+  lines.push("");
+  lines.push(
+    `Total: ${
+      totalPrice !== null
+        ? formatAED(totalPrice)
+        : "Price will be confirmed after order"
+    }`
+  );
+  lines.push("");
+  lines.push("Thank you.");
+
+  return lines.join("\n");
+}
 
   function sendWhatsAppOrder() {
     const message = buildWhatsAppMessage();
