@@ -1406,7 +1406,7 @@ export default function HomePage() {
         </div>
 
         <div className="hero">
-          <img src="/Logo.png" alt="Atom of Sugar" className="hero-logo" />
+          <img src="/icon-1024.png" alt="Atom of Sugar" className="hero-logo" />
 
           <div className={`brand-line ${isArabic ? "ar" : "en"}`}>
             {isArabic ? text.brandLine.ar : text.brandLine.en}
