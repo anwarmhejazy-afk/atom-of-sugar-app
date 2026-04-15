@@ -1,0 +1,51 @@
+{
+  "name": "Atom of Sugar",
+  "short_name": "Atom Sugar",
+  "description": "Luxury homemade Arabic sweets",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#e9e5e1",
+  "theme_color": "#e9e5e1",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Atom of Sugar mobile app experience"
+    },
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Atom of Sugar desktop app experience"
+    }
+  ],
+  "categories": ["food", "shopping", "lifestyle"],
+  "lang": "ar",
+  "dir": "rtl"
+}
