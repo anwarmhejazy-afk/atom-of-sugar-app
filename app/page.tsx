@@ -52,19 +52,19 @@ const giftOptions: GiftOption[] = [
   {
     id: "gift-packaging",
     labelEn: "Gift Packaging (+10 AED)",
-    labelAr: "تغليف هدية (+10 درهم)",
+    labelAr: "تغليف هدية (+١٠ درهم)",
     price: 10,
   },
   {
     id: "greeting-card",
     labelEn: "Greeting Card (+5 AED)",
-    labelAr: "بطاقة تهنئة (+5 دراهم)",
+    labelAr: "بطاقة تهنئة (+٥ دراهم)",
     price: 5,
   },
   {
     id: "mixed-selection",
     labelEn: "Mixed Selection (+15 AED)",
-    labelAr: "تشكيلة متنوعة (+15 درهم)",
+    labelAr: "تشكيلة متنوعة (+١٥ درهم)",
     price: 15,
   },
 ];
@@ -110,19 +110,19 @@ const products: Product[] = [
       {
         id: "25-pieces",
         labelEn: "25 Pieces — 50 AED",
-        labelAr: "25 قطعة — 50 درهم",
+       labelAr: "٢٥ قطعة — ٥٠ درهم",
         price: 50,
       },
       {
         id: "35-pieces",
         labelEn: "35 Pieces — 70 AED",
-        labelAr: "35 قطعة — 70 درهم",
-        price: 70,
+        labelAr: "٣٥ قطعة — ٧٠ درهم",
+         price: 70,
       },
       {
         id: "60-pieces",
         labelEn: "60 Pieces — 110 AED",
-        labelAr: "60 قطعة — 110 درهم",
+        labelAr: "٦٠ قطعة — ١١٠ درهم",
         price: 110,
       },
     ],
@@ -147,13 +147,13 @@ const products: Product[] = [
       {
         id: "1kg",
         labelEn: "1 KG — 80 AED",
-        labelAr: "1 كيلو — 80 درهم",
+        labelAr: "١ كيلو — ٨٠ درهم",
         price: 80,
       },
       {
         id: "2kg",
         labelEn: "2 KG — 150 AED",
-        labelAr: "2 كيلو — 150 درهم",
+        labelAr: "٢ كيلو — ١٥٠ درهم",
         price: 150,
       },
     ],
@@ -207,13 +207,13 @@ const products: Product[] = [
       {
         id: "1kg",
         labelEn: "1 KG — 80 AED",
-        labelAr: "1 كيلو — 80 درهم",
+        labelAr: "١ كيلو — ٨٠ درهم",
         price: 80,
       },
       {
         id: "2kg",
         labelEn: "2 KG — 150 AED",
-        labelAr: "2 كيلو — 150 درهم",
+        labelAr: "٢ كيلو — ١٥٠ درهم",
         price: 150,
       },
     ],
@@ -273,13 +273,13 @@ const products: Product[] = [
       {
         id: "1kg",
         labelEn: "1 KG — 70 AED",
-        labelAr: "1 كيلو — 70 درهم",
+        labelAr: "١ كيلو — ٧٠ درهم",
         price: 70,
       },
       {
         id: "2kg",
         labelEn: "2 KG — 130 AED",
-        labelAr: "2 كيلو — 130 درهم",
+       labelAr: "٢ كيلو — ١٣٠ درهم",
         price: 130,
       },
     ],
@@ -328,8 +328,12 @@ const products: Product[] = [
   },
 ];
 
+function toArabicDigits(value: number | string) {
+  return String(value).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
+}
+
 function formatAED(value: number, isArabic: boolean) {
-  return isArabic ? `${value} درهم` : `${value} AED`;
+  return isArabic ? `${toArabicDigits(value)} درهم` : `${value} AED`;
 }
 
 export default function HomePage() {
