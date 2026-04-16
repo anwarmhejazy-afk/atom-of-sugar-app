@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -54,23 +53,6 @@ export default function RootLayout({
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col">
         {children}
-
-        <Script id="register-service-worker" strategy="afterInteractive">
-          {`
-            if ("serviceWorker" in navigator) {
-              window.addEventListener("load", function () {
-                navigator.serviceWorker
-                  .register("/sw.js")
-                  .then(function () {
-                    console.log("Service Worker registered successfully");
-                  })
-                  .catch(function (error) {
-                    console.error("Service Worker registration failed:", error);
-                  });
-              });
-            }
-          `}
-        </Script>
 
         <Analytics />
       </body>
