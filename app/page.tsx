@@ -734,6 +734,9 @@ function sendBasketOrder() {
 
   const url = `${WHATSAPP_LINK}?text=${encodeURIComponent(lines.join("\n"))}`;
   window.open(url, "_blank", "noopener,noreferrer");
+
+setBasketItems([]);
+setIsBasketOpen(false);
 }
   
 
