@@ -347,6 +347,24 @@ export default function HomePage() {
   const [selectedGiftOptionIds, setSelectedGiftOptionIds] = useState<string[]>([]);
   const [specialNotes, setSpecialNotes] = useState<string>("");
 
+  type BasketItem = {
+  id: string;
+  productNameEn: string;
+  productNameAr: string;
+  optionEn: string;
+  optionAr: string;
+  quantity: number;
+  flavorsEn: string[];
+  flavorsAr: string[];
+  giftsEn: string[];
+  giftsAr: string[];
+  notes: string;
+  totalPrice: number | null;
+};
+
+const [basketItems, setBasketItems] = useState<BasketItem[]>([]);
+const [isBasketOpen, setIsBasketOpen] = useState(false);
+
   const selectedProduct = useMemo(
     () => products.find((product) => product.id === selectedProductId) ?? null,
     [selectedProductId]
@@ -605,15 +623,119 @@ export default function HomePage() {
     return lines.join("\n");
   }
 
-  function sendWhatsAppOrder() {
-    const message = buildWhatsAppMessage();
-    if (!message) {
-      return;
+  function addToBasket() {
+  if (!selectedProduct || !selectedOption) {
+    return;
+  }
+
+  if (selectedProduct.hasFlavorSelector && selectedFlavors.length === 0) {
+    alert(isArabic ? text.flavorRequired.ar : text.flavorRequired.en);
+    return;
+  }
+
+  const newItem: BasketItem = {
+    id: `${selectedProduct.id}-${Date.now()}`,
+    productNameEn: selectedProduct.title.en,
+    productNameAr: selectedProduct.title.ar,
+    optionEn: selectedOption.labelEn,
+    optionAr: selectedOption.labelAr,
+    quantity,
+    flavorsEn: selectedFlavorObjects.map((flavor) => flavor.labelEn),
+    flavorsAr: selectedFlavorObjects.map((flavor) => flavor.labelAr),
+    giftsEn: selectedGiftOptions.map((gift) => gift.labelEn),
+    giftsAr: selectedGiftOptions.map((gift) => gift.labelAr),
+    notes: specialNotes.trim(),
+    totalPrice,
+  };
+
+  setBasketItems((prev) => [...prev, newItem]);
+  closeProductSheet();
+  setIsBasketOpen(true);
+}
+
+function removeBasketItem(itemId: string) {
+  setBasketItems((prev) => prev.filter((item) => item.id !== itemId));
+}
+
+function sendBasketOrder() {
+  if (basketItems.length === 0) {
+    return;
+  }
+
+  const lines: string[] = [];
+
+  if (isArabic) {
+    lines.push("مرحباً،");
+    lines.push("");
+    lines.push("أرغب في طلب المنتجات التالية:");
+  } else {
+    lines.push("Hello,");
+    lines.push("");
+    lines.push("I would like to order the following items:");
+  }
+
+  lines.push("");
+
+  basketItems.forEach((item, index) => {
+    lines.push(isArabic ? `الطلب رقم ${toArabicDigits(index + 1)}:` : `Item ${index + 1}:`);
+    lines.push(isArabic ? `المنتج: ${item.productNameAr}` : `Product: ${item.productNameEn}`);
+    lines.push(isArabic ? `الخيار: ${item.optionAr}` : `Option: ${item.optionEn}`);
+    lines.push(isArabic ? `الكمية: ${toArabicDigits(item.quantity)}` : `Quantity: ${item.quantity}`);
+
+    if (item.flavorsAr.length > 0) {
+      lines.push(
+        isArabic
+          ? `النكهات: ${item.flavorsAr.join("، ")}`
+          : `Flavors: ${item.flavorsEn.join(", ")}`
+      );
     }
 
-    const url = `${WHATSAPP_LINK}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  }
+    if (item.giftsAr.length > 0) {
+      lines.push(
+        isArabic
+          ? `الإضافات: ${item.giftsAr.join("، ")}`
+          : `Gift options: ${item.giftsEn.join(", ")}`
+      );
+    }
+
+    if (item.notes) {
+      lines.push(isArabic ? `ملاحظات: ${item.notes}` : `Notes: ${item.notes}`);
+    }
+
+    lines.push(
+      isArabic
+        ? `السعر: ${
+            item.totalPrice !== null
+              ? formatAED(item.totalPrice, true)
+              : text.priceConfirmedAfterOrder.ar
+          }`
+        : `Price: ${
+            item.totalPrice !== null
+              ? formatAED(item.totalPrice, false)
+              : text.priceConfirmedAfterOrder.en
+          }`
+    );
+
+    lines.push("");
+  });
+
+  const knownTotal = basketItems
+    .filter((item) => item.totalPrice !== null)
+    .reduce((sum, item) => sum + (item.totalPrice ?? 0), 0);
+
+  lines.push(
+    isArabic
+      ? `الإجمالي التقريبي: ${formatAED(knownTotal, true)}`
+      : `Estimated total: ${formatAED(knownTotal, false)}`
+  );
+
+  lines.push("");
+  lines.push(isArabic ? "شكراً لكم." : "Thank you.");
+
+  const url = `${WHATSAPP_LINK}?text=${encodeURIComponent(lines.join("\n"))}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+  
 
   return (
     <main
@@ -1645,9 +1767,169 @@ export default function HomePage() {
         </section>
       </section>
 
+<div
+  onClick={() => setIsBasketOpen(true)}
+  style={{
+    position: "fixed",
+    bottom: "24px",
+    right: isArabic ? "24px" : "24px",
+    zIndex: 9999,
+    background: "#25d366",
+    color: "#fff",
+    borderRadius: "999px",
+    padding: "14px 20px",
+    fontWeight: 700,
+    cursor: "pointer",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.18)",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+  }}
+>
+  <span>🛒</span>
+
+  <span>
+    {isArabic
+      ? `السلة (${toArabicDigits(basketItems.length)})`
+      : `Basket (${basketItems.length})`}
+  </span>
+</div>
+
       <footer className="site-footer">
         {isArabic ? text.footerText.ar : text.footerText.en}
       </footer>
+
+{isBasketOpen && (
+  <div
+    className="sheet-overlay"
+    onClick={() => setIsBasketOpen(false)}
+  >
+    <div
+      className="sheet-panel"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        className={`sheet-close ${isArabic ? "ar" : "en"}`}
+        onClick={() => setIsBasketOpen(false)}
+      >
+        ×
+      </button>
+
+      <div className="sheet-handle" />
+
+      <h2 className="sheet-title">
+        {isArabic ? "سلة الطلبات" : "Your Basket"}
+      </h2>
+
+      {basketItems.length === 0 ? (
+        <p
+          style={{
+            textAlign: "center",
+            color: "#8f735d",
+            marginTop: "20px",
+          }}
+        >
+          {isArabic
+            ? "لا توجد منتجات في السلة"
+            : "Your basket is empty"}
+        </p>
+      ) : (
+        <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              marginTop: "20px",
+            }}
+          >
+            {basketItems.map((item) => (
+              <div
+                key={item.id}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #eaded2",
+                  borderRadius: "18px",
+                  padding: "14px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "start",
+                    gap: "10px",
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        color: "#6b5143",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      {isArabic
+                        ? item.productNameAr
+                        : item.productNameEn}
+                    </div>
+
+                    <div style={{ color: "#8f735d", fontSize: "14px" }}>
+                      {isArabic
+                        ? item.optionAr
+                        : item.optionEn}
+                    </div>
+
+                    <div
+                      style={{
+                        color: "#8f735d",
+                        fontSize: "14px",
+                        marginTop: "4px",
+                      }}
+                    >
+                      {isArabic
+                        ? `الكمية: ${toArabicDigits(item.quantity)}`
+                        : `Quantity: ${item.quantity}`}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => removeBasketItem(item.id)}
+                    style={{
+                      border: "none",
+                      background: "#ffeded",
+                      color: "#c0392b",
+                      borderRadius: "999px",
+                      padding: "8px 12px",
+                      cursor: "pointer",
+                      fontWeight: 700,
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: "18px" }}>
+            <button
+              type="button"
+              className="sheet-primary"
+              onClick={sendBasketOrder}
+              style={{ width: "100%" }}
+            >
+              {isArabic
+                ? "إرسال الطلب عبر واتساب"
+                : "Send Order on WhatsApp"}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
 
       {selectedProduct && (
         <div
@@ -1824,9 +2106,9 @@ export default function HomePage() {
               <button
                 type="button"
                 className="sheet-primary"
-                onClick={sendWhatsAppOrder}
+                onClick={addToBasket}
               >
-                {isArabic ? text.sendOrder.ar : text.sendOrder.en}
+                {isArabic ? "أضف إلى سلة الطلبات" : "Add to Basket"}
               </button>
 
               <button
